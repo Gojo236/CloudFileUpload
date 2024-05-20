@@ -20,7 +20,7 @@ import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './CreateFolderDialog';
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const uploadOptions = [
   {
