@@ -1,3 +1,4 @@
+"use client";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import AlertDialog from './CreateFolderDialog';
 
 const drawerWidth = 240;
 
@@ -47,6 +49,14 @@ export default function SideBar() {
     whiteSpace: 'nowrap',
     width: 1,
   });
+
+  const [open, setOpen] = React.useState(false);
+
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer
@@ -85,6 +95,7 @@ export default function SideBar() {
               tabIndex={-1}
               fullWidth
               startIcon={<CloudUploadIcon />}
+              onClick={()=> setOpen(true)}
             >
               Create Folder
             </Button>
@@ -101,6 +112,7 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
+      <AlertDialog open = {open} handleClose={handleClose}/>
     </Box>
   );
 }

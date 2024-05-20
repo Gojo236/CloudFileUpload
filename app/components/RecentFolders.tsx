@@ -9,8 +9,8 @@ function RecentFolders() {
         <a href="#" className="tw-font-medium tw-text-blue-600 tw-dark:text-blue-500 tw-hover:underline">View all</a>
       </div>
       <div className="tw-flex tw-flex-row tw-gap-4 tw-flex-wrap tw-justify-around">
-        {folders.map((item) => {
-          return <div className="tw-max-w-32 tw-p-2 hover:tw-cursor-pointer hover:tw-scale-110">
+        {folders.map((item, index) => {
+          return <div key={index} className="tw-max-w-32 tw-p-2 hover:tw-cursor-pointer hover:tw-scale-110">
             <FolderCopyTwoToneIcon style={{ margin: "5px", fontSize: "75px", color: "#f0c865"}} />
             <p>{item}</p>
           </div>
