@@ -8,6 +8,7 @@ import SearchBar from "./components/SearchBar";
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderCopyTwoToneIcon from '@mui/icons-material/FolderCopyTwoTone';
 import RecentFolders from "./components/RecentFolders";
+import RecentFiles from "./components/RecentFiles";
 export default function Home() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -29,7 +30,7 @@ export default function Home() {
         <div className="tw-flex tw-flex-col tw-items-center tw-w-9/12 tw-m-4">
           <SearchBar />
           <RecentFolders/>
-
+          <RecentFiles/>
         </div>
       </div>
     </main>

@@ -15,6 +15,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
+import { Button, makeStyles, styled } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const drawerWidth = 240;
 
@@ -22,18 +24,29 @@ const uploadOptions = [
   {
     text: 'Upload File',
     icon: AddIcon,
-    style: {backgroundColor:"#61ad66", margin: 2, borderRadius: 10}
-  }, 
+    style: { backgroundColor: "#61ad66", margin: 2, borderRadius: 10 }
+  },
   {
     text: 'Upload Folder',
     icon: AddIcon,
-    style: {backgroundColor:"#34baeb", margin: 2, borderRadius: 10}
+    style: { backgroundColor: "#34baeb", margin: 2, borderRadius: 10 }
   }
 ];
-const sideBarActions = ['Home', 'My Files','Trash', 'Starred'];
+const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
 export default function SideBar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
 
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer
@@ -50,26 +63,38 @@ export default function SideBar() {
       >
         <Toolbar />
         <Divider />
-        <List>
-          {uploadOptions.map((item, index) => (
-            <ListItem key={item.text} style={item.style} disablePadding>
-              <ListItemButton color='red'>
-                <ListItemIcon color='red'>
-                  <item.icon/>
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+        <List className='tw-m-2 tw-p-2'>
+          <ListItem className='tw-m-2'>
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              fullWidth
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
+          </ListItem>
+          <ListItem className='tw-m-2'>
+            <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              fullWidth
+              startIcon={<CloudUploadIcon />}
+            >
+              Create Folder
+            </Button>
+          </ListItem>
         </List>
         <Divider />
         <List>
           {sideBarActions.map((text, index) => (
             <ListItem key={text} disablePadding onClick={() => setSelectedIndex(index)} className='tw-bg-red tw-red'>
               <ListItemButton selected={selectedIndex == index} className='tw-bg-red'>
-                {/* <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon> */}
                 <ListItemText primary={text} />
               </ListItemButton>
             </ListItem>
