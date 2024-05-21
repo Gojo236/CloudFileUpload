@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -7,13 +7,15 @@ function SignOut() {
     const router = useRouter();
     const handleGoogleSignOut = () => {
         signOut();
-        router.push("/")
       };
     
     const { data: session, status } = useSession();
-    if (status === "unauthenticated") {
-        router.push("/")
-    }
+    
+    useEffect(()=>{
+        if (status === "unauthenticated") {
+            router.push("/")
+        }
+    },[status])
       
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">

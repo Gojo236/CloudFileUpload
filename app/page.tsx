@@ -5,13 +5,13 @@ import RecentFiles from "../components/RecentFiles";
 import { getServerSession } from "next-auth";
 import Login from "./login/page";
 import { authOptions } from "@/authOptions";
-export default async function Home() {
 
+export default async function Home() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    <Login/>
-    return;
+    console.log("LOGIN");
+    return <Login />;
   }
  
   return (
@@ -20,8 +20,8 @@ export default async function Home() {
       <div className="tw-w-full tw-flex tw-justify-center">
         <div className="tw-flex tw-flex-col tw-items-center tw-w-9/12 tw-m-4">
           <SearchBar />
-          <RecentFolders/>
-          <RecentFiles/>
+          <RecentFolders />
+          <RecentFiles />
         </div>
       </div>
     </main>
