@@ -12,11 +12,11 @@ const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: firebaseProjectId+".firebaseapp.com",
   projectId: firebaseProjectId,
-  storageBucket: firebaseProjectId+".appspot.com",
+  storageBucket: "gs://file-upload-816f8.appspot.com",
   messagingSenderId: "861788465291",
   appId: process.env.FIREBASE_APP_ID,
   measurementId: "G-72W1L6CHG3"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const storage = getStorage(app)

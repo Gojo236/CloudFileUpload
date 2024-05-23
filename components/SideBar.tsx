@@ -51,6 +51,28 @@ export default function SideBar() {
     setOpen(false);
   };
 
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      console.log(e.target.files[0])
+      const body = new FormData();
+      body.append("file", e.target.files[0]);
+      try {
+        const response = await fetch("http://localhost:3000/api/file", {
+          method: "POST",
+          body: body,
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('File uploaded successfully:', result);
+        } else {
+          console.error('Error uploading file:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer
@@ -78,7 +100,7 @@ export default function SideBar() {
               fullWidth
             >
               Upload file
-              <VisuallyHiddenInput type="file" />
+              <VisuallyHiddenInput type="file" onChange={handleFileInput} />
             </Button>
           </ListItem>
           <ListItem className='tw-m-2'>
@@ -89,7 +111,7 @@ export default function SideBar() {
               tabIndex={-1}
               fullWidth
               startIcon={<CloudUploadIcon />}
-              onClick={()=> setOpen(true)}
+              onClick={() => setOpen(true)}
             >
               Create Folder
             </Button>
@@ -106,7 +128,7 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
-      <AlertDialog open = {open} handleClose={handleClose}/>
+      <AlertDialog open={open} handleClose={handleClose} />
     </Box>
   );
 }
