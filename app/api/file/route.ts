@@ -1,15 +1,12 @@
 import connectDB from "@/lib/connectDb";
-import Folder, { IFolder } from "@/model/Folder";
-import { NextApiRequest } from "next";
+
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 import { storage } from "@/config/firebaseConfig";
-import { ref, uploadBytes } from "firebase/storage";
-import { readFile, readFileSync } from "fs";
-
-const filePath = process.cwd() + "/app/api/file/Hello.txt";
-// 'file' comes from the Blob or File API
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Doc, { IDoc } from "@/model/Doc";
+import Folder, { IFolder } from "@/model/Folder";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
@@ -18,6 +15,7 @@ export async function POST(req: NextRequest) {
             status: 401
         });
     }
+    await connectDB();
     const formData = await req.formData()
     if(! formData.get("file"))
     {
@@ -25,21 +23,47 @@ export async function POST(req: NextRequest) {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
-    
     }
     const file = formData.get("file") as File;
-    console.log(file);
 
     const storageRef = ref(storage, file.name);
-    console.log(filePath);
     const arrayBuffer = await file.arrayBuffer();
-    uploadBytes(storageRef, arrayBuffer).then((snapshot) => {
-        console.log('File Uploaded Successfully');
+
+    await uploadBytes(storageRef, arrayBuffer)
+
+    const uri = await getDownloadURL(storageRef)
+    const newDoc: IDoc = new Doc({
+        name: file.name,
+        parentFolder: formData.get("parentFolder"),
+        userEmail: session?.user?.email,
+        downloadURL: uri.toString(),
+        docSize: file.size
     });
 
-    return new Response(JSON.stringify({ msg: "Hi" }), {
+
+    await newDoc.save()
+    return new Response(JSON.stringify(newDoc), {
         status: 201,
         headers: { 'Content-Type': 'application/json' }
     });
 
+}
+
+export async function GET() {
+    await connectDB();
+    const session = await getServerSession();
+    if (!session?.user?.email)
+        return;
+    await connectDB();
+    const files = await Doc.find({
+        userEmail: session?.user?.email
+    });
+
+    // const res = folders.map((folder: IFolder) => {
+    //     return {
+    //         id: folder._id,
+    //         name: folder.name
+    //     }
+    // })
+    return NextResponse.json(files)
 }

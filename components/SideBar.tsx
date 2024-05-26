@@ -13,42 +13,18 @@ import { useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './CreateFolderDialog';
+import { useRouter } from 'next/navigation';
 
 const drawerWidth = 260;
 
-const uploadOptions = [
-  {
-    text: 'Upload File',
-    icon: AddIcon,
-    style: { backgroundColor: "#61ad66", margin: 2, borderRadius: 10 }
-  },
-  {
-    text: 'Upload Folder',
-    icon: AddIcon,
-    style: { backgroundColor: "#34baeb", margin: 2, borderRadius: 10 }
-  }
-];
 const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
 export default function SideBar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
-
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
-
   const [open, setOpen] = React.useState(false);
-
-
+  const router = useRouter();
   const handleClose = () => {
     setOpen(false);
+    router.refresh();
   };
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +33,7 @@ export default function SideBar() {
       const body = new FormData();
       body.append("file", e.target.files[0]);
       try {
-        const response = await fetch("http://localhost:3000/api/file", {
+        const response = await fetch("/api/file", {
           method: "POST",
           body: body,
         });
@@ -65,6 +41,8 @@ export default function SideBar() {
         if (response.ok) {
           const result = await response.json();
           console.log('File uploaded successfully:', result);
+          alert("File Uploaded Successfully");
+          router.refresh();  
         } else {
           console.error('Error uploading file:', response.statusText);
         }
@@ -73,6 +51,7 @@ export default function SideBar() {
       }
     }
   }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer
@@ -128,7 +107,19 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
-      <AlertDialog open={open} handleClose={handleClose} />
+      <AlertDialog open={open} handleClose={handleClose}/>
     </Box>
   );
 }
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
