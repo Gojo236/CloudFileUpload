@@ -13,10 +13,12 @@ export async function GET() {
         userEmail: session?.user?.email
     });
 
-    const res = folders.map((folder: IFolder) => {
+    const res = folders.map((folder) => {
         return {
             id: folder._id,
-            name: folder.name
+            name: folder.name,
+            updatedAt: folder.updatedAt,
+            size: folder.size
         }
     })
     return NextResponse.json(res)

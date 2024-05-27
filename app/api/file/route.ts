@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { storage } from "@/config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Doc, { IDoc } from "@/model/Doc";
-import Folder, { IFolder } from "@/model/Folder";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
@@ -17,8 +16,7 @@ export async function POST(req: NextRequest) {
     }
     await connectDB();
     const formData = await req.formData()
-    if(! formData.get("file"))
-    {
+    if (!formData.get("file")) {
         return new Response(JSON.stringify({ msg: "UploadFile" }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
@@ -55,15 +53,17 @@ export async function GET() {
     if (!session?.user?.email)
         return;
     await connectDB();
-    const files = await Doc.find({
+    const docs = await Doc.find({
         userEmail: session?.user?.email
     });
 
-    // const res = folders.map((folder: IFolder) => {
-    //     return {
-    //         id: folder._id,
-    //         name: folder.name
-    //     }
-    // })
-    return NextResponse.json(files)
+    return NextResponse.json(docs.map((doc) => {
+        return {
+            id: doc._id,
+            name: doc.name,
+            downloadURL: doc.downloadURL,
+            docSize: doc.docSize,
+            updatedAt: doc.updatedAt,
+        }
+    }))
 }
