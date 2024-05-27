@@ -30,7 +30,6 @@ const formatDate = (date: Date) => {
     })
 };
 export default function BasicTable() {
-    // const [files, setFiles] = useState<FileResponse[]>([]);
     const getFiles = async () => {
         const response = await fetch('/api/file');
         if (!response.ok) {
@@ -41,13 +40,13 @@ export default function BasicTable() {
         return result
     };
 
-    const {data: files, isLoading} = useQuery({ queryKey: ['todos'], queryFn: getFiles })
+    const {data: files, isLoading} = useQuery({ queryKey: ['files'], queryFn: getFiles })
 
     if(isLoading)
     {
         return <div>Loading</div>;
     }
-    
+
     return (
         <div className='tw-bg-white tw-mt-4 tw-rounded-l-3xl tw-p-6 tw-w-full tw-overflow-y-auto'>
             <div className="tw-flex tw-flex-row tw-justify-around tw-w-full tw-mb-1">

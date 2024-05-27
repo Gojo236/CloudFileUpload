@@ -14,19 +14,20 @@ import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './CreateFolderDialog';
 import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const drawerWidth = 260;
 
 const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
+
 export default function SideBar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
+  const useQuery = useQueryClient()
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const handleClose = () => {
     setOpen(false);
-    router.refresh();
   };
-
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       console.log(e.target.files[0])
@@ -42,7 +43,7 @@ export default function SideBar() {
           const result = await response.json();
           console.log('File uploaded successfully:', result);
           alert("File Uploaded Successfully");
-          router.refresh();  
+          router.refresh();
         } else {
           console.error('Error uploading file:', response.statusText);
         }
@@ -51,6 +52,14 @@ export default function SideBar() {
       }
     }
   }
+  const mutation = useMutation({
+    mutationFn: handleFileInput,
+    onSuccess: () => {
+      // Invalidate and refetch
+      useQuery.invalidateQueries({ queryKey: ['files'] })
+    },
+  })
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -79,7 +88,7 @@ export default function SideBar() {
               fullWidth
             >
               Upload file
-              <VisuallyHiddenInput type="file" onChange={handleFileInput} />
+              <VisuallyHiddenInput type="file" onChange={mutation.mutate} />
             </Button>
           </ListItem>
           <ListItem className='tw-m-2'>
@@ -107,7 +116,7 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
-      <AlertDialog open={open} handleClose={handleClose}/>
+      <AlertDialog open={open} handleClose={handleClose} />
     </Box>
   );
 }
