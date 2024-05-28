@@ -1,9 +1,7 @@
 import connectDB from "@/lib/connectDb";
 import Doc from "@/model/Doc";
 import Folder, { IFolder } from "@/model/Folder";
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
-import { useSearchParams } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,26 +9,19 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession();
     if (!session?.user?.email)
         return;
-    
+
     const searchParams = new URLSearchParams(req.url.split("?")[1])
     const folderId = searchParams.get("folderId");
-    console.log(searchParams);
     let folders;
-    if (folderId) {
-        folders = await Folder.find({
-            userEmail: session?.user?.email,
-            parentFolder: folderId
-        });
-    }
-    else {
-        folders = await Folder.find({
-            userEmail: session?.user?.email
-        });
-    }
+
+    folders = await Folder.find({
+        userEmail: session?.user?.email,
+        parentFolder: (folderId == "null") ? null : folderId
+    });
 
     const docs = await Doc.find({
         userEmail: session?.user?.email,
-        parentFolder: folderId
+        parentFolder: (folderId == "null") ? null : folderId
     });
 
     const userFolders = folders.map((folder) => {

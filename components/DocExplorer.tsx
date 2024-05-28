@@ -43,17 +43,11 @@ const formatDate = (date: Date) => {
 };
 // { files: docs, folders }: DocExplorerProps
 export default function DocExplorer() {
-    // const search = useSearchParams()
-    // const folderId = search.get("folderId")
+    const search = useSearchParams()
+    const folderId = search.get("folderId")
     // console.log(folderId)
     const getFiles = async () => {
-        const response = await fetch('/api/folder',{
-            method: "GET",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                folderId: null
-            })
-        });
+        const response = await fetch(`/api/folder?folderId=${folderId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
