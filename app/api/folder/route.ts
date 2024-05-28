@@ -1,19 +1,39 @@
 import connectDB from "@/lib/connectDb";
+import Doc from "@/model/Doc";
 import Folder, { IFolder } from "@/model/Folder";
 import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
+import { useSearchParams } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     await connectDB();
     const session = await getServerSession();
     if (!session?.user?.email)
         return;
-    const folders = await Folder.find({
-        userEmail: session?.user?.email
+    
+    const searchParams = new URLSearchParams(req.url.split("?")[1])
+    const folderId = searchParams.get("folderId");
+    console.log(searchParams);
+    let folders;
+    if (folderId) {
+        folders = await Folder.find({
+            userEmail: session?.user?.email,
+            parentFolder: folderId
+        });
+    }
+    else {
+        folders = await Folder.find({
+            userEmail: session?.user?.email
+        });
+    }
+
+    const docs = await Doc.find({
+        userEmail: session?.user?.email,
+        parentFolder: folderId
     });
 
-    const res = folders.map((folder) => {
+    const userFolders = folders.map((folder) => {
         return {
             id: folder._id,
             name: folder.name,
@@ -21,18 +41,28 @@ export async function GET() {
             size: folder.size
         }
     })
-    return NextResponse.json(res)
+
+    const userDocs = docs.map((doc) => {
+        return {
+            id: doc._id,
+            name: doc.name,
+            downloadURL: doc.downloadURL,
+            docSize: doc.docSize,
+            updatedAt: doc.updatedAt,
+        }
+    })
+
+    return NextResponse.json({ userFolders, userDocs });
 }
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
-    if(!session)
-    {
-        return new Response("Login First",{
+    if (!session) {
+        return new Response("Login First", {
             status: 401
         });
     }
-    
+
     try {
         await connectDB();
 

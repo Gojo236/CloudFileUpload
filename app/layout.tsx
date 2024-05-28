@@ -8,6 +8,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query'
+import SideBar from "@/components/SideBar";
 
 const queryClient = new QueryClient()
 const inter = Inter({ subsets: ["latin"] });
@@ -22,7 +23,12 @@ export default function RootLayout({
       <SessionProvider>
         <CssBaseline />
         <html lang="en" id="_next">
-          <body className={inter.className}>{children}</body>
+          <body className={inter.className}>
+            <div className="tw-flex tw-gap-8 tw-bg-slate-200 tw-h-screen">
+              <SideBar />
+              {children}
+            </div>
+          </body>
         </html>
       </SessionProvider>
     </QueryClientProvider>

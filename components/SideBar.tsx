@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './CreateFolderDialog';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const drawerWidth = 260;
@@ -21,6 +21,9 @@ const drawerWidth = 260;
 const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
 
 export default function SideBar() {
+  const search = useSearchParams()
+  const folderId = search.get("folderId")
+  
   const [selectedIndex, setSelectedIndex] = useState(1);
   const useQuery = useQueryClient()
   const [open, setOpen] = React.useState(false);
@@ -33,6 +36,7 @@ export default function SideBar() {
       console.log(e.target.files[0])
       const body = new FormData();
       body.append("file", e.target.files[0]);
+      (folderId && body.append("parentFolder", folderId));
       try {
         const response = await fetch("/api/file", {
           method: "POST",

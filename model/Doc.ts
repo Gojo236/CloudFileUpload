@@ -1,5 +1,4 @@
 import { Document, Schema, model, Types, models } from 'mongoose';
-
 export interface IDoc extends Document {
   name: string;
   parentFolder?: Types.ObjectId | null;

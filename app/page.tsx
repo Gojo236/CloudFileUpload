@@ -5,6 +5,8 @@ import RecentFiles from "../components/RecentFiles";
 import { getServerSession } from "next-auth";
 import Login from "./login/page";
 import { authOptions } from "@/authOptions";
+import DocExplorer from "@/components/DocExplorer";
+import BreadCrumbs from "@/components/BreadCrumbs";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -13,15 +15,16 @@ export default async function Home() {
     console.log("LOGIN");
     return <Login />;
   }
- 
+
   return (
-    <main className="tw-flex tw-flex-row tw-gap-4 tw-bg-slate-200 tw-h-screen">
-      <SideBar />
+    <main >
       <div className="tw-w-full tw-flex tw-justify-center">
-        <div className="tw-flex tw-flex-col tw-items-center tw-w-9/12 tw-m-4">
+        <div className="tw-flex tw-flex-col tw-m-4">
           <SearchBar />
-          <RecentFolders />
-          <RecentFiles />
+          {/* <BreadCrumbs/> */}
+          <DocExplorer />
+          {/* <RecentFolders />
+          <RecentFiles /> */}
         </div>
       </div>
     </main>
