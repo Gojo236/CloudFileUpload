@@ -21,10 +21,8 @@ export default async function Home() {
       <div className="tw-w-full tw-flex tw-justify-center">
         <div className="tw-flex tw-flex-col tw-m-4">
           <SearchBar />
-          {/* <BreadCrumbs/> */}
-          <DocExplorer />
-          {/* <RecentFolders />
-          <RecentFiles /> */}
+          <BreadCrumbs/>
+          <DocExplorer/>
         </div>
       </div>
     </main>

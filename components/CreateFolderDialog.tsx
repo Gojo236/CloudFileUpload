@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface dialogProps {
   open: boolean,
@@ -16,13 +16,15 @@ interface dialogProps {
 };
 
 export default function AlertDialog({ open, handleClose }: dialogProps) {
-  const router = useRouter();
   const [folderName, setFolderName] = useState("")
 
+  const search = useSearchParams()
+  
   const apiFolderCreationRequest = async () => {
+    const parentFolder = search.get("folderId")
     const res = await fetch("/api/folder", {
       method: "POST",
-      body: JSON.stringify({ name: folderName }),
+      body: JSON.stringify({ name: folderName, parentFolder: parentFolder }),
     })
     console.log(res)
   }

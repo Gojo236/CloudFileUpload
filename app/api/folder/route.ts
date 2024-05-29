@@ -7,14 +7,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
     await connectDB();
     const session = await getServerSession();
-    if (!session?.user?.email)
-        return;
+    if (!session) {
+        return new Response("Login First", {
+            status: 401
+        });
+    }
 
     const searchParams = new URLSearchParams(req.url.split("?")[1])
     const folderId = searchParams.get("folderId");
-    let folders;
 
-    folders = await Folder.find({
+    const folders = await Folder.find({
         userEmail: session?.user?.email,
         parentFolder: (folderId == "null") ? null : folderId
     });
