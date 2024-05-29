@@ -22,7 +22,7 @@ const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
 
 export default function SideBar() {
   const search = useSearchParams()
-  const folderId = search.get("folderId")
+  
   
   const [selectedIndex, setSelectedIndex] = useState(1);
   const useQuery = useQueryClient()
@@ -32,6 +32,7 @@ export default function SideBar() {
     setOpen(false);
   };
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const folderId = search.get("folderId")
     if (e.target.files && e.target.files[0]) {
       console.log(e.target.files[0])
       const body = new FormData();
@@ -59,8 +60,7 @@ export default function SideBar() {
   const mutation = useMutation({
     mutationFn: handleFileInput,
     onSuccess: () => {
-      // Invalidate and refetch
-      useQuery.invalidateQueries({ queryKey: ['files'] })
+      useQuery.invalidateQueries({ queryKey: ['foldersFiles'] })
     },
   })
 

@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface dialogProps {
   open: boolean,
@@ -18,8 +19,9 @@ interface dialogProps {
 export default function AlertDialog({ open, handleClose }: dialogProps) {
   const [folderName, setFolderName] = useState("")
 
+  const useClient = useQueryClient()
   const search = useSearchParams()
-  
+
   const apiFolderCreationRequest = async () => {
     const parentFolder = search.get("folderId")
     const res = await fetch("/api/folder", {
@@ -28,9 +30,16 @@ export default function AlertDialog({ open, handleClose }: dialogProps) {
     })
     console.log(res)
   }
+
+  const mutation = useMutation({
+    mutationFn: apiFolderCreationRequest,
+    onSuccess: () => {
+      useClient.invalidateQueries({ queryKey: ['foldersFiles'] });
+    },
+  })
+
   const createFolder = async () => {
     await apiFolderCreationRequest();
-    handleClose();
   }
   return (
     <Dialog
@@ -48,7 +57,8 @@ export default function AlertDialog({ open, handleClose }: dialogProps) {
       <DialogActions>
         <Button onClick={() => handleClose()}>Cancel</Button>
         <Button onClick={() => {
-          createFolder()
+          mutation.mutate();
+          handleClose();
         }} autoFocus>Create</Button>
       </DialogActions>
     </Dialog>
