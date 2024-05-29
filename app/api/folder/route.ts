@@ -1,6 +1,7 @@
 import connectDB from "@/lib/connectDb";
 import Doc from "@/model/Doc";
 import Folder, { IFolder } from "@/model/Folder";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,7 +15,9 @@ export async function GET(req: NextRequest) {
     }
 
     const searchParams = new URLSearchParams(req.url.split("?")[1])
-    const folderId = searchParams.get("folderId");
+
+    const folderIdCheck = searchParams.get("folderId");
+    const folderId = folderIdCheck ? (mongoose.Types.ObjectId.isValid(folderIdCheck) ? folderIdCheck : null) : null;
 
     const folders = await Folder.find({
         userEmail: session?.user?.email,
@@ -26,7 +29,7 @@ export async function GET(req: NextRequest) {
         parentFolder: (folderId == "null") ? null : folderId
     });
 
-    const userFolders = folders.map((folder) => {
+    const userFolders = folders?.map((folder) => {
         return {
             id: folder._id,
             name: folder.name,
@@ -35,7 +38,7 @@ export async function GET(req: NextRequest) {
         }
     })
 
-    const userDocs = docs.map((doc) => {
+    const userDocs = docs?.map((doc) => {
         return {
             id: doc._id,
             name: doc.name,
