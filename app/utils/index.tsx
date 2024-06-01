@@ -1,5 +1,3 @@
-import { useSearchParams } from "next/navigation";
-
 export const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>, folderId: string|null) => {
     console.log("Hello world")
     console.log(folderId)

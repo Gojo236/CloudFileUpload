@@ -71,7 +71,7 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
             </Menu>
             <AlertDialog open={renameDialog} handleClose={() => {
                 setRenameDialog(false);
-            }} handleSubmit={renameApiRequest} placeholderText={"Rename Folder"} />
+            }} handleSubmit={renameApiRequest} placeholderText={"Type new name"} />
         </div>
     );
 }
