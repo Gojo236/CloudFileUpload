@@ -52,7 +52,7 @@ function BreadCrumbs() {
                         </Link> */}
                         {it.id == ""?
                         <StyledBreadcrumb component="a" href="/" label={it.name} sx={{fontSize: "1rem"}}/>:
-                        <StyledBreadcrumb component="a" href="?folderId=${it.id}" label={it.name} sx={{fontSize: "1rem", cursor: "pointer"}}/>
+                        <StyledBreadcrumb component="a" href={`?folderId=${it.id}`} label={it.name} sx={{fontSize: "1rem", cursor: "pointer"}}/>
                         }
                         {/* <Link
                             underline="hover"

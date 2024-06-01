@@ -38,9 +38,7 @@ export default function AlertDialog({ open, handleClose }: dialogProps) {
     },
   })
 
-  const createFolder = async () => {
-    await apiFolderCreationRequest();
-  }
+
   return (
     <Dialog
       open={open}

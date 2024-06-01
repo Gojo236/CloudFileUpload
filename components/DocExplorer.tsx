@@ -13,6 +13,7 @@ import FolderCopyTwoToneIcon from '@mui/icons-material/FolderCopyTwoTone';
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
+import KebabMenu from './KebabMenu';
 interface FileInterface {
     id: string;
     name: string;
@@ -100,7 +101,7 @@ export default function DocExplorer() {
                                     <TableCell align="right">{formatDate(folder.updatedAt)}</TableCell>
                                     <TableCell align="right">{(folder.size / (1024 * 1024)).toPrecision(2)} MB</TableCell>
                                     <TableCell align="right">
-                                        <MoreVertIcon />
+                                        <KebabMenu isFile={false} id={folder.id} parentFolderId={folderId}/>
                                     </TableCell>
                                 </TableRow>
                             // </div>
@@ -119,7 +120,7 @@ export default function DocExplorer() {
                                 <TableCell align="right">{formatDate(file.updatedAt)}</TableCell>
                                 <TableCell align="right">{(file.docSize / (1024 * 1024)).toPrecision(2)} MB</TableCell>
                                 <TableCell align="right">
-                                    <MoreVertIcon />
+                                <KebabMenu isFile={true} id={file.id} parentFolderId={folderId}/>
                                 </TableCell>
                             </TableRow>
                         ))}

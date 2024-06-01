@@ -25,7 +25,7 @@ export default function SideBar() {
   
   
   const [selectedIndex, setSelectedIndex] = useState(1);
-  const useQuery = useQueryClient()
+  const queryClient = useQueryClient()
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const handleClose = () => {
@@ -60,7 +60,7 @@ export default function SideBar() {
   const mutation = useMutation({
     mutationFn: handleFileInput,
     onSuccess: () => {
-      useQuery.invalidateQueries({ queryKey: ['foldersFiles'] })
+      queryClient.invalidateQueries({ queryKey: ['foldersFiles'] })
     },
   })
 
