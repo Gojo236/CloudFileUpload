@@ -8,57 +8,29 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './CreateFolderDialog';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
+import { handleFileInput } from '@/app/utils';
+import { useSearchParams } from 'next/navigation';
 const drawerWidth = 260;
-
 const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
 
 export default function SideBar() {
+
   const search = useSearchParams()
-  
-  
+  const folderId = search.get("folderId")
   const [selectedIndex, setSelectedIndex] = useState(1);
   const queryClient = useQueryClient()
   const [open, setOpen] = React.useState(false);
-  const router = useRouter();
   const handleClose = () => {
     setOpen(false);
   };
-  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const folderId = search.get("folderId")
-    if (e.target.files && e.target.files[0]) {
-      console.log(e.target.files[0])
-      const body = new FormData();
-      body.append("file", e.target.files[0]);
-      (folderId && body.append("parentFolder", folderId));
-      try {
-        const response = await fetch("/api/file", {
-          method: "POST",
-          body: body,
-        });
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log('File uploaded successfully:', result);
-          alert("File Uploaded Successfully");
-          router.refresh();
-        } else {
-          console.error('Error uploading file:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
-    }
-  }
   const mutation = useMutation({
-    mutationFn: handleFileInput,
+    mutationFn: (e: React.ChangeEvent<HTMLInputElement>) => handleFileInput(e, folderId) ,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['foldersFiles'] })
     },

@@ -1,7 +1,5 @@
 import SideBar from "../components/SideBar";
 import SearchBar from "../components/SearchBar";
-import RecentFolders from "../components/RecentFolders";
-import RecentFiles from "../components/RecentFiles";
 import { getServerSession } from "next-auth";
 import Login from "./login/page";
 import { authOptions } from "@/authOptions";
