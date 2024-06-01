@@ -4,24 +4,25 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-
+import AlertDialog from './AlertDialog';
+import { useState } from 'react';
+import { rename } from 'fs';
 
 
 const ITEM_HEIGHT = 48;
 
-export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: boolean, id: string, parentFolderId: string|null }) {
+export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: boolean, id: string, parentFolderId: string | null }) {
     const queryClient = useQueryClient()
 
-    const renameFolder = async () =>{
-        const response = await fetch(`/api/${isFile?"file":"folder"}/rename`,{
+    const renameApiRequest = async (newName: string) => {
+        const response = await fetch(`/api/${isFile ? "file" : "folder"}/rename`, {
             method: "PUT",
             body: JSON.stringify({
-                name: "Temp",
+                name: newName,
                 id: id
             })
         });
-        
+
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -29,21 +30,6 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
         console.log(result)
         return result
     }
-    const renameFile =async()=>{
-        
-    }
-    const nameUpdate = useMutation({
-        mutationFn: (isFile ? renameFile: renameFolder),
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['foldersFiles'] })
-        },
-      })
-
-    const options = [
-        {label: 'Rename', handleClick: nameUpdate.mutate},
-        {label: 'Delete', handleClick: ()=>{}}
-    ];
-
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -54,6 +40,7 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
         setAnchorEl(null);
     };
 
+    const [renameDialog, setRenameDialog] = useState(false);
     return (
         <div>
             <IconButton
@@ -75,12 +62,16 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
                 open={open}
                 onClose={handleClose}
             >
-                {options.map((option) => (
-                    <MenuItem key={option.label} onClick={() => {option.handleClick()}}>
-                        {option.label}
-                    </MenuItem>
-                ))}
+                <MenuItem onClick={() => { setRenameDialog(true) }}>
+                    {"Rename"}
+                </MenuItem>
+                <MenuItem onClick={() => { }}>
+                    {"Delete"}
+                </MenuItem>
             </Menu>
+            <AlertDialog open={renameDialog} handleClose={() => {
+                setRenameDialog(false);
+            }} handleSubmit={renameApiRequest} placeholderText={"Rename Folder"} />
         </div>
     );
 }

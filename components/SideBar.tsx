@@ -11,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import AlertDialog from './CreateFolderDialog';
+import AlertDialog from './AlertDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleFileInput } from '@/app/utils';
 import { useSearchParams } from 'next/navigation';
@@ -35,6 +35,15 @@ export default function SideBar() {
       queryClient.invalidateQueries({ queryKey: ['foldersFiles'] })
     },
   })
+
+  const apiFolderCreationRequest = async (name: String) => {
+    const parentFolder = search.get("folderId")
+    const res = await fetch("/api/folder", {
+      method: "POST",
+      body: JSON.stringify({ name: name, parentFolder: parentFolder }),
+    })
+    console.log(res)
+  }
 
 
   return (
@@ -92,7 +101,7 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
-      <AlertDialog open={open} handleClose={handleClose} />
+      <AlertDialog open={open} handleClose={handleClose} handleSubmit={apiFolderCreationRequest} placeholderText={"Add folder name"}/>
     </Box>
   );
 }

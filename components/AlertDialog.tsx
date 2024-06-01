@@ -13,26 +13,28 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface dialogProps {
   open: boolean,
-  handleClose: Function
+  handleClose: Function,
+  placeholderText: string,
+  handleSubmit: (name: string) => Promise<void>
 };
 
-export default function AlertDialog({ open, handleClose }: dialogProps) {
+export default function AlertDialog({ open, handleClose, handleSubmit, placeholderText }: dialogProps) {
   const [folderName, setFolderName] = useState("")
 
   const useClient = useQueryClient()
-  const search = useSearchParams()
+  // const search = useSearchParams()
 
-  const apiFolderCreationRequest = async () => {
-    const parentFolder = search.get("folderId")
-    const res = await fetch("/api/folder", {
-      method: "POST",
-      body: JSON.stringify({ name: folderName, parentFolder: parentFolder }),
-    })
-    console.log(res)
-  }
+  // const apiFolderCreationRequest = async () => {
+  //   const parentFolder = search.get("folderId")
+  //   const res = await fetch("/api/folder", {
+  //     method: "POST",
+  //     body: JSON.stringify({ name: folderName, parentFolder: parentFolder }),
+  //   })
+  //   console.log(res)
+  // }
 
   const mutation = useMutation({
-    mutationFn: apiFolderCreationRequest,
+    mutationFn: ()=>handleSubmit(folderName),
     onSuccess: () => {
       useClient.invalidateQueries({ queryKey: ['foldersFiles'] });
     },
@@ -46,7 +48,7 @@ export default function AlertDialog({ open, handleClose }: dialogProps) {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {"Add folder name"}
+        {placeholderText}
       </DialogTitle>
       <DialogContent>
         <TextField id="standard-basic" label="Standard" variant="standard" className='tw-w-96'
