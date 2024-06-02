@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
 
     const docs = await Doc.find({
         userEmail: session?.user?.email,
-        parentFolder: (folderId == "null") ? null : folderId
+        parentFolder: (folderId == "null") ? null : folderId,
+        deletedAt: null
     });
 
     const userFolders = folders?.map((folder) => {
