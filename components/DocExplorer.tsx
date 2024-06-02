@@ -113,7 +113,7 @@ export default function DocExplorer() {
                             >
                                 <TableCell component="th" scope="row">
                                     <InsertDriveFileIcon className='tw-mr-2' />
-                                    <a href={file.downloadURL}>
+                                    <a href={`/api/file/download?docId=${file.id}`} download={file.name}>
                                         {file.name}
                                     </a>
                                 </TableCell>

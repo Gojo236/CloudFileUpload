@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { storage } from "@/config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Doc, { IDoc } from "@/model/Doc";
+import mongoose from "mongoose";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
@@ -24,13 +25,14 @@ export async function POST(req: NextRequest) {
     }
     const file = formData.get("file") as File;
 
-    const storageRef = ref(storage, file.name);
+    const fileId = new mongoose.Types.ObjectId()
+    const storageRef = ref(storage, fileId.toString());
     const arrayBuffer = await file.arrayBuffer();
 
-    await uploadBytes(storageRef, arrayBuffer)
 
     const uri = await getDownloadURL(storageRef)
     const newDoc: IDoc = new Doc({
+        _id: fileId,
         name: file.name,
         parentFolder: formData.get("parentFolder"),
         userEmail: session?.user?.email,
