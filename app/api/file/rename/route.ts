@@ -1,5 +1,7 @@
+import { storage } from "@/config/firebaseConfig";
 import connectDB from "@/lib/connectDb";
 import Doc from "@/model/Doc";
+import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

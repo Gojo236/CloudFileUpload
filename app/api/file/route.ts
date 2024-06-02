@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 import { storage } from "@/config/firebaseConfig";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import Doc, { IDoc } from "@/model/Doc";
 import mongoose from "mongoose";
 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const storageRef = ref(storage, fileId.toString());
     const arrayBuffer = await file.arrayBuffer();
 
-
+    await uploadBytes(storageRef, arrayBuffer);
     const uri = await getDownloadURL(storageRef)
     const newDoc: IDoc = new Doc({
         _id: fileId,
@@ -68,4 +68,50 @@ export async function GET() {
             updatedAt: doc.updatedAt,
         }
     }))
+}
+
+export async function DELETE(req: NextRequest) {
+    const session = await getServerSession();
+    if (!session) {
+        return new Response("Login First", {
+            status: 401
+        });
+    }
+
+    const searchParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = searchParams.get('id');
+    if (!id) {
+        return new Response(JSON.stringify({ msg: "Document ID is required" }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    await connectDB();
+
+    try {
+        const document = await Doc.findById(id);
+        if (!document) {
+            return new Response(JSON.stringify({ msg: "Document not found" }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        const storageRef = ref(storage, document._id.toString());
+        await deleteObject(storageRef);
+
+        await Doc.findByIdAndDelete(id);
+
+        return new Response(JSON.stringify({ msg: "File deleted successfully" }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.error(error);
+        return new Response(JSON.stringify({ msg: "Internal Server Error" }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }

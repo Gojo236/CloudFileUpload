@@ -31,6 +31,26 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
         return result
     }
 
+    const deleteDoc = async (id: string) => {
+        const response = await fetch(`/api/${isFile ? "file" : "folder"}?id=${id}`, {
+            method: "Delete"
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        console.log(result)
+        return result
+    }
+
+    const mutation = useMutation({
+        mutationFn: (id: string) => deleteDoc(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['foldersFiles'] });
+        },
+    })
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -65,7 +85,7 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
                 <MenuItem onClick={() => { setRenameDialog(true) }}>
                     {"Rename"}
                 </MenuItem>
-                <MenuItem onClick={() => { }}>
+                <MenuItem onClick={() => {mutation.mutate(id)}}>
                     {"Delete"}
                 </MenuItem>
             </Menu>
