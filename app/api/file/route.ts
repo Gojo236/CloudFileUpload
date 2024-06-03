@@ -64,7 +64,7 @@ export async function GET() {
             id: doc._id,
             name: doc.name,
             downloadURL: doc.downloadURL,
-            docSize: doc.docSize,
+            docSize: doc.size,
             updatedAt: doc.updatedAt,
         }
     }))
