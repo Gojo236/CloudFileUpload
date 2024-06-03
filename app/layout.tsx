@@ -24,10 +24,7 @@ export default function RootLayout({
         <CssBaseline />
         <html lang="en" id="_next">
           <body className={inter.className}>
-            <div className="tw-flex tw-gap-8 tw-bg-slate-200 tw-h-screen">
-              <SideBar />
               {children}
-            </div>
           </body>
         </html>
       </SessionProvider>

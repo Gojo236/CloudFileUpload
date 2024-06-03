@@ -16,11 +16,14 @@ export default async function Home() {
 
   return (
     <main >
-      <div className="tw-w-full tw-flex tw-justify-center">
-        <div className="tw-flex tw-flex-col tw-m-4">
-          <SearchBar />
-          <BreadCrumbs/>
-          <DocExplorer/>
+      <div className="tw-flex tw-gap-8 tw-bg-slate-200 tw-h-screen">
+        <SideBar />
+        <div className="tw-w-full tw-flex">
+          <div className="tw-flex tw-flex-col tw-m-4">
+            <SearchBar />
+            <BreadCrumbs />
+            <DocExplorer />
+          </div>
         </div>
       </div>
     </main>
