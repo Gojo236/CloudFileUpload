@@ -65,7 +65,9 @@ export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
     const userDocs = data?.userDocs
 
     if (userDocs?.length + userFolders?.length == 0) {
-        return "Upload Files or add new folders";
+        return <div className='tw-p-2'>
+            "Upload Files or add new folders"
+        </div>
     }
     return (
         <div className='tw-bg-white tw-mt-4 tw-rounded-l-3xl tw-p-6 tw-w-full tw-overflow-y-auto'>

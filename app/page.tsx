@@ -11,26 +11,6 @@ export default function Home() {
   const sideBarActions = ['Home', 'My Files', 'Trash', 'Starred'];
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const getFiles = async () => {
-    const response = await fetch(`/api/folder?folderId=${search.get("folderId")}`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const result = await response.json();
-    console.log(result)
-    return result
-  };
-
-  const getAllNotDeletedFiles = async () => {
-    const response = await fetch(`/api/file`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const result = await response.json();
-    console.log(result)
-    return result
-  };
-
   const folderId = search.get("folderId");
   const sideBarActionsDataFetchURLs = [
     `/api/folder?folderId=${folderId}`,

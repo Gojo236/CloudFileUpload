@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
     const folderIdCheck = searchParams.get("folderId");
     const folderId = folderIdCheck ? (mongoose.Types.ObjectId.isValid(folderIdCheck) ? folderIdCheck : null) : null;
 
-    console.log(searchParams);
     let folder;
     if (folderId) {
         folder = await Folder.find({
@@ -30,7 +29,6 @@ export async function GET(req: NextRequest) {
     if(!folderId)
     return NextResponse.json([{name:"home",id:""}]);
     const pathToRoot =await getParentFolders(folderId);
-    console.log(pathToRoot)
     return NextResponse.json(pathToRoot);
 }
 

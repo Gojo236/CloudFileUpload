@@ -97,7 +97,6 @@ export async function DELETE(req: NextRequest) {
 
     try {
         const document = await Doc.findById(id);
-        console.log(document);
         if (!document) {
             return new Response(JSON.stringify({ msg: "Document not found" }), {
                 status: 404,
@@ -128,13 +127,13 @@ export async function DELETE(req: NextRequest) {
     }
 }
 
-async function updateParentFoldersSize(folderId: String | null | undefined, fileSize: number) {
+export async function updateParentFoldersSize(folderId: String | null | undefined, size: number) {
     if (!folderId)
         return;
     const folder = await Folder.findById(folderId);
     if(!folder)
         return;
-    folder.size += fileSize;
+    folder.size += size;
     folder.save();
-    updateParentFoldersSize(folder.parentFolder, fileSize);
+    updateParentFoldersSize(folder.parentFolder, size);
 }

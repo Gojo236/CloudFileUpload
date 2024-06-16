@@ -1,9 +1,10 @@
 import connectDB from "@/lib/connectDb";
-import Doc from "@/model/Doc";
+import Doc, { IDoc } from "@/model/Doc";
 import Folder, { IFolder } from "@/model/Folder";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { updateParentFoldersSize } from "../file/route";
 
 export async function GET(req: NextRequest) {
     await connectDB();
@@ -90,5 +91,60 @@ export async function POST(req: NextRequest) {
         return new Response("Internal Server Error", {
             status: 500
         });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    await connectDB();
+    const session = await getServerSession();
+    if (!session) {
+        return new Response("Login First", {
+            status: 401
+        });
+    }
+
+    const searchParams = new URLSearchParams(req.url.split("?")[1])
+
+    const folderIdCheck = searchParams.get("id");
+    const folderId = folderIdCheck ? (mongoose.Types.ObjectId.isValid(folderIdCheck) ? folderIdCheck : null) : null;
+
+    console.log("FolderID :", folderId)
+    if(!folderId)
+        return NextResponse.json({msg: "Wrong id"});
+
+    const folder = await Folder.findOne({
+        userEmail: session?.user?.email,
+        _id: folderId
+    });
+
+    if(!folder)
+        return NextResponse.json({msg: "Wrong id"});
+    
+    console.log("Start Deleting");
+    await deleteSubFoldersAndFiles(folderId);
+    return NextResponse.json({msg: "folder deleted successfully"});
+}
+
+async function deleteSubFoldersAndFiles(folderId: string) {
+    console.log("Folder going to be deleted: "+  folderId)
+    try {
+        let folders = await Folder.find({ parentFolder: folderId });
+        
+        for (let folder of folders) {
+            await deleteSubFoldersAndFiles(folder._id);
+        }
+
+        let docs: IDoc[] = await Doc.find({ parentFolder: folderId });
+
+        for (let doc of docs) {
+            await updateParentFoldersSize(doc.parentFolder?.toString(), -1 * doc.docSize);
+            doc.parentFolder = null;
+            doc.deletedAt = new Date();
+            await doc.save();
+        }
+
+        await Folder.findByIdAndDelete(folderId);
+    } catch (err) {
+        console.error(`Error deleting folder ${folderId}: `, err);
     }
 }
