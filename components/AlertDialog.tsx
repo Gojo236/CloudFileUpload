@@ -23,17 +23,7 @@ export default function AlertDialog({ open, handleClose, handleSubmit, placehold
   const [folderName, setFolderName] = useState(defaultText)
 
   const useClient = useQueryClient()
-  // const search = useSearchParams()
-
-  // const apiFolderCreationRequest = async () => {
-  //   const parentFolder = search.get("folderId")
-  //   const res = await fetch("/api/folder", {
-  //     method: "POST",
-  //     body: JSON.stringify({ name: folderName, parentFolder: parentFolder }),
-  //   })
-  //   console.log(res)
-  // }
-
+  
   const mutation = useMutation({
     mutationFn: ()=>handleSubmit(folderName),
     onSuccess: () => {

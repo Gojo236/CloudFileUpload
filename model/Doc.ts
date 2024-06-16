@@ -6,6 +6,7 @@ export interface IDoc extends Document {
   downloadURL: string;
   docSize: number;
   deletedAt: Date|null;
+  extension: string;
 }
 
 const docSchema = new Schema<IDoc>({
@@ -14,7 +15,8 @@ const docSchema = new Schema<IDoc>({
   userEmail: { type: String, required: true },
   downloadURL: { type: String, required: true },
   docSize: { type: Number, required: true },
-  deletedAt: {type: Date, default: null}
+  deletedAt: {type: Date, default: null},
+  extension: { type: String, default: "" },
 },
   {
     timestamps: true

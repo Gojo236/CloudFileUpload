@@ -16,25 +16,35 @@ export async function POST(req: NextRequest) {
             status: 401
         });
     }
+
     await connectDB();
-    const formData = await req.formData()
+    const formData = await req.formData();
     if (!formData.get("file")) {
         return new Response(JSON.stringify({ msg: "UploadFile" }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    const file = formData.get("file") as File;
 
-    const fileId = new mongoose.Types.ObjectId()
+    const file = formData.get("file") as File;
+    const fileId = new mongoose.Types.ObjectId();
     const storageRef = ref(storage, fileId.toString());
     const arrayBuffer = await file.arrayBuffer();
 
     await uploadBytes(storageRef, arrayBuffer);
-    const uri = await getDownloadURL(storageRef)
+    const uri = await getDownloadURL(storageRef);
+
+    // Extract file extension
+    const fileName = file.name;
+    let fileExtension = "";
+    if (fileName.lastIndexOf('.') !== -1) {
+        fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+    }
+
     const newDoc: IDoc = new Doc({
         _id: fileId,
-        name: file.name,
+        name: fileName,
+        extension: fileExtension,
         parentFolder: formData.get("parentFolder"),
         userEmail: session?.user?.email,
         downloadURL: uri.toString(),
@@ -42,12 +52,12 @@ export async function POST(req: NextRequest) {
     });
 
     await updateParentFoldersSize(formData.get("parentFolder")?.toString(), file.size);
-    await newDoc.save()
+    await newDoc.save();
+
     return new Response(JSON.stringify(newDoc), {
         status: 201,
         headers: { 'Content-Type': 'application/json' }
     });
-
 }
 
 export async function GET() {
@@ -70,6 +80,7 @@ export async function GET() {
                     downloadURL: doc.downloadURL,
                     docSize: doc.size,
                     updatedAt: doc.updatedAt,
+                    extension: doc.extension
                 }
             }
             )

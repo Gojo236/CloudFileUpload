@@ -26,7 +26,12 @@ export async function PUT(req: NextRequest) {
             });
         }
 
-        const result = await Doc.findByIdAndUpdate(id, { name: name }, { new: true });
+        const fileName = name;
+        let fileExtension = "";
+        if (fileName.lastIndexOf('.') !== -1) {
+            fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+        }
+        const result = await Doc.findByIdAndUpdate(id, { name: name, extension: fileExtension }, { new: true });
 
         if (!result) {
             return new NextResponse("Doc not found", {
