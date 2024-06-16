@@ -112,6 +112,7 @@ export async function DELETE(req: NextRequest) {
         }
         else {
             document.deletedAt = Date.now();
+            updateParentFoldersSize(document.parentFolder, -1 * document.docSize)
             await document.save();
         }
         return new Response(JSON.stringify({ msg: "File deleted successfully" }), {
