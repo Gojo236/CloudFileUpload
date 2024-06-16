@@ -29,8 +29,7 @@ interface FolderInterface {
 };
 
 interface DocExplorerProps {
-    files: FileInterface[];
-    folders: FolderInterface[];
+    fetchData: () => Promise<any>;
 }
 
 const formatDate = (date: Date) => {
@@ -43,23 +42,11 @@ const formatDate = (date: Date) => {
     })
 };
 // { files: docs, folders }: DocExplorerProps
-export default function DocExplorer() {
-    const queryClient = useQueryClient()
+export default function DocExplorer({ fetchData }: DocExplorerProps) {
     const search = useSearchParams()
-    const folderId = search.get("folderId")
     const router = useRouter();
-    const getFiles = async () => {
-        const response = await fetch(`/api/folder?folderId=${folderId}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log(result)
-        return result
-    };
 
-
-    const { data, isLoading } = useQuery({ queryKey: ['foldersFiles', folderId], queryFn: getFiles})
+    const { data, isLoading } = useQuery({ queryKey: ['foldersFiles'], queryFn: fetchData })
 
     if (isLoading) {
         return <div>Loading</div>;
@@ -67,9 +54,8 @@ export default function DocExplorer() {
 
     const userFolders = data?.userFolders
     const userDocs = data?.userDocs
-    
-    if(userDocs?.length + userFolders?.length  == 0)
-    {
+
+    if (userDocs?.length + userFolders?.length == 0) {
         return "Upload Files or add new folders";
     }
     return (
@@ -87,22 +73,22 @@ export default function DocExplorer() {
                     </TableHead>
                     <TableBody>
                         {userFolders.map((folder: any) => (
-                                <TableRow
-                                    key={folder.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontSize: "60px"}}
-                                >
-                                    <TableCell component="th" scope="row" onClick={()=>{
-                                        router.push(`?folderId=${folder.id}`);
-                                    }} sx={{cursor: "pointer"}}>
-                                        <FolderCopyTwoToneIcon style={{ margin: "5px", fontSize: "25px", color: "#f0c865" }} />
-                                        {folder.name}
-                                    </TableCell>
-                                    <TableCell align="right">{formatDate(folder.updatedAt)}</TableCell>
-                                    <TableCell align="right">{(folder.size / (1024 * 1024)).toPrecision(2)} MB</TableCell>
-                                    <TableCell align="right">
-                                        <KebabMenu isFile={false} id={folder.id} parentFolderId={folderId}/>
-                                    </TableCell>
-                                </TableRow>
+                            <TableRow
+                                key={folder.id}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontSize: "60px" }}
+                            >
+                                <TableCell component="th" scope="row" onClick={() => {
+                                    router.push(`?folderId=${folder.id}`);
+                                }} sx={{ cursor: "pointer" }}>
+                                    <FolderCopyTwoToneIcon style={{ margin: "5px", fontSize: "25px", color: "#f0c865" }} />
+                                    {folder.name}
+                                </TableCell>
+                                <TableCell align="right">{formatDate(folder.updatedAt)}</TableCell>
+                                <TableCell align="right">{(folder.size / (1024 * 1024)).toPrecision(2)} MB</TableCell>
+                                <TableCell align="right">
+                                    <KebabMenu isFile={false} id={folder.id} parentFolderId={search.get("folderId")} />
+                                </TableCell>
+                            </TableRow>
                             // </div>
                         ))}
                         {userDocs.map((file: any) => (
@@ -119,7 +105,7 @@ export default function DocExplorer() {
                                 <TableCell align="right">{formatDate(file.updatedAt)}</TableCell>
                                 <TableCell align="right">{(file.docSize / (1024 * 1024)).toPrecision(2)} MB</TableCell>
                                 <TableCell align="right">
-                                <KebabMenu isFile={true} id={file.id} parentFolderId={folderId}/>
+                                    <KebabMenu isFile={true} id={file.id} parentFolderId={search.get("folderId")} />
                                 </TableCell>
                             </TableRow>
                         ))}
