@@ -3,8 +3,6 @@ import connectDB from "@/lib/connectDb";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-import { storage } from "@/config/firebaseConfig";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import Doc, { IDoc } from "@/model/Doc";
 import mongoose from "mongoose";
 
@@ -24,7 +22,7 @@ export async function GET() {
             id: doc._id,
             name: doc.name,
             downloadURL: doc.downloadURL,
-            docSize: doc.size,
+            docSize: doc.docSize,
             updatedAt: doc.updatedAt,
         }
     });

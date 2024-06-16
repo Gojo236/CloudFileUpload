@@ -15,11 +15,12 @@ interface dialogProps {
   open: boolean,
   handleClose: Function,
   placeholderText: string,
-  handleSubmit: (name: string) => Promise<void>
+  handleSubmit: (name: string) => Promise<void>,
+  defaultText?: string
 };
 
-export default function AlertDialog({ open, handleClose, handleSubmit, placeholderText }: dialogProps) {
-  const [folderName, setFolderName] = useState("")
+export default function AlertDialog({ open, handleClose, handleSubmit, placeholderText, defaultText = "" }: dialogProps) {
+  const [folderName, setFolderName] = useState(defaultText)
 
   const useClient = useQueryClient()
   // const search = useSearchParams()

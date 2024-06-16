@@ -11,7 +11,7 @@ import { rename } from 'fs';
 
 const ITEM_HEIGHT = 48;
 
-export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: boolean, id: string, parentFolderId: string | null }) {
+export default function KebabMenu({ isFile, id, name }: { isFile: boolean, id: string, name: string }) {
     const queryClient = useQueryClient()
 
     const renameApiRequest = async (newName: string) => {
@@ -91,7 +91,7 @@ export default function KebabMenu({ isFile, id, parentFolderId }: { isFile: bool
             </Menu>
             <AlertDialog open={renameDialog} handleClose={() => {
                 setRenameDialog(false);
-            }} handleSubmit={renameApiRequest} placeholderText={"Type new name"} />
+            }} handleSubmit={renameApiRequest} placeholderText={"Type new name"} defaultText={name}/>
         </div>
     );
 }

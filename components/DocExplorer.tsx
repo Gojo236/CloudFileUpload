@@ -97,7 +97,7 @@ export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
                                 <TableCell align="right">{formatDate(folder.updatedAt)}</TableCell>
                                 <TableCell align="right">{(folder.size / (1024 * 1024)).toPrecision(2)} MB</TableCell>
                                 <TableCell align="right">
-                                    <KebabMenu isFile={false} id={folder.id} parentFolderId={search.get("folderId")} />
+                                    <KebabMenu isFile={false} id={folder.id} name={folder.name} />
                                 </TableCell>
                             </TableRow>
                             // </div>
@@ -116,7 +116,7 @@ export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
                                 <TableCell align="right">{formatDate(file.updatedAt)}</TableCell>
                                 <TableCell align="right">{(file.docSize / (1024 * 1024)).toPrecision(2)} MB</TableCell>
                                 <TableCell align="right">
-                                    <KebabMenu isFile={true} id={file.id} parentFolderId={search.get("folderId")} />
+                                    <KebabMenu isFile={true} id={file.id} name={file.name} />
                                 </TableCell>
                             </TableRow>
                         ))}
