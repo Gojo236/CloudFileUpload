@@ -96,6 +96,7 @@ export async function DELETE(req: NextRequest) {
 
     try {
         const document = await Doc.findById(id);
+        console.log(document);
         if (!document) {
             return new Response(JSON.stringify({ msg: "Document not found" }), {
                 status: 404,
@@ -103,15 +104,16 @@ export async function DELETE(req: NextRequest) {
             });
         }
 
-        // const storageRef = ref(storage, document._id.toString());
-        // await deleteObject(storageRef);
-
-        // await Doc.findByIdAndDelete(id);
-        document.deletedAt = Date.now();
-
-        await document.save();
-
-        console.log(document)
+        if (document.deletedAt != null) {
+            const storageRef = ref(storage, document._id.toString());
+            await deleteObject(storageRef);
+            await Doc.findByIdAndDelete(id);
+        }
+        else
+        {
+            document.deletedAt = Date.now();
+            await document.save();
+        }
         return new Response(JSON.stringify({ msg: "File deleted successfully" }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
