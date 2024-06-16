@@ -31,25 +31,11 @@ export default function Home() {
     return result
   };
 
-  const sideBarActionsDataFetch = [
-    async () => {
-      const response = await fetch(`/api/folder?folderId=${search.get("folderId")}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result = await response.json();
-      console.log(result)
-      return result
-    },
-    async () => {
-      const response = await fetch(`/api/file`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result = await response.json();
-      console.log(result)
-      return result
-    }
+  const folderId = search.get("folderId");
+  const sideBarActionsDataFetchURLs = [
+    `/api/folder?folderId=${folderId}`,
+    `/api/file`,
+    `/api/file/trash`
   ];
   return (
     <main >
@@ -59,7 +45,7 @@ export default function Home() {
           <div className="tw-flex tw-flex-col tw-m-4">
             <SearchBar />
             <BreadCrumbs />
-            <DocExplorer fetchData={sideBarActionsDataFetch[selectedIndex]} key={selectedIndex.toString() + search.get("folderId")} />
+            <DocExplorer fetchDataURL={sideBarActionsDataFetchURLs[selectedIndex]} key={selectedIndex.toString() + folderId} />
           </div>
         </div>
       </div>

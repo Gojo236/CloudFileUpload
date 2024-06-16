@@ -29,7 +29,7 @@ interface FolderInterface {
 };
 
 interface DocExplorerProps {
-    fetchData: () => Promise<any>;
+    fetchDataURL: string;
 }
 
 const formatDate = (date: Date) => {
@@ -42,10 +42,19 @@ const formatDate = (date: Date) => {
     })
 };
 // { files: docs, folders }: DocExplorerProps
-export default function DocExplorer({ fetchData }: DocExplorerProps) {
+export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
     const search = useSearchParams()
     const router = useRouter();
 
+    async function fetchData() {
+        const response = await fetch(fetchDataURL);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        console.log(result)
+        return result
+    }
     const { data, isLoading } = useQuery({ queryKey: ['foldersFiles'], queryFn: fetchData })
 
     if (isLoading) {
