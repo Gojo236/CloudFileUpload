@@ -72,7 +72,7 @@ export default function DocExplorer({ fetchData }: DocExplorerProps) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {userFolders.map((folder: any) => (
+                        {userFolders?.map((folder: any) => (
                             <TableRow
                                 key={folder.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontSize: "60px" }}
@@ -91,7 +91,7 @@ export default function DocExplorer({ fetchData }: DocExplorerProps) {
                             </TableRow>
                             // </div>
                         ))}
-                        {userDocs.map((file: any) => (
+                        {userDocs?.map((file: any) => (
                             <TableRow
                                 key={file.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontSize: "60px" }}

@@ -56,18 +56,23 @@ export async function GET() {
         return;
     await connectDB();
     const docs = await Doc.find({
-        userEmail: session?.user?.email
+        userEmail: session?.user?.email,
+        deletedAt: null
     });
 
-    return NextResponse.json(docs.map((doc) => {
-        return {
-            id: doc._id,
-            name: doc.name,
-            downloadURL: doc.downloadURL,
-            docSize: doc.size,
-            updatedAt: doc.updatedAt,
-        }
-    }))
+    return NextResponse.json({
+        userDocs:
+            docs.map((doc) => {
+                return {
+                    id: doc._id,
+                    name: doc.name,
+                    downloadURL: doc.downloadURL,
+                    docSize: doc.size,
+                    updatedAt: doc.updatedAt,
+                }
+            }
+            )
+    })
 }
 
 export async function DELETE(req: NextRequest) {

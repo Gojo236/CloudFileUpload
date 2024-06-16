@@ -21,6 +21,36 @@ export default function Home() {
     return result
   };
 
+  const getAllNotDeletedFiles = async () => {
+    const response = await fetch(`/api/file`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const result = await response.json();
+    console.log(result)
+    return result
+  };
+
+  const sideBarActionsDataFetch = [
+    async () => {
+      const response = await fetch(`/api/folder?folderId=${search.get("folderId")}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();
+      console.log(result)
+      return result
+    },
+    async () => {
+      const response = await fetch(`/api/file`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();
+      console.log(result)
+      return result
+    }
+  ];
   return (
     <main >
       <div className="tw-flex tw-gap-8 tw-bg-slate-200 tw-h-screen">
@@ -29,7 +59,7 @@ export default function Home() {
           <div className="tw-flex tw-flex-col tw-m-4">
             <SearchBar />
             <BreadCrumbs />
-            <DocExplorer fetchData ={getFiles} key={search.get("folderId")}/>
+            <DocExplorer fetchData={sideBarActionsDataFetch[selectedIndex]} key={selectedIndex.toString() + search.get("folderId")} />
           </div>
         </div>
       </div>
