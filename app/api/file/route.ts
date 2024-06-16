@@ -73,12 +73,12 @@ export async function GET() {
 
     return NextResponse.json({
         userDocs:
-            docs.map((doc) => {
+            docs.map((doc: IDoc) => {
                 return {
                     id: doc._id,
                     name: doc.name,
                     downloadURL: doc.downloadURL,
-                    docSize: doc.size,
+                    docSize: doc.docSize,
                     updatedAt: doc.updatedAt,
                     extension: doc.extension
                 }

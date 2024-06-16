@@ -8,25 +8,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FolderCopyTwoToneIcon from '@mui/icons-material/FolderCopyTwoTone';
-import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import KebabMenu from './KebabMenu';
-interface FileInterface {
-    id: string;
-    name: string;
-    size: number;
-    updatedAt: Date;
-    downloadURL: string;
-};
-interface FolderInterface {
-    id: string;
-    name: string;
-    size: number;
-    updatedAt: Date;
-};
 
 interface DocExplorerProps {
     fetchDataURL: string;
@@ -41,9 +26,8 @@ const formatDate = (date: Date) => {
         minute: '2-digit'
     })
 };
-// { files: docs, folders }: DocExplorerProps
+
 export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
-    const search = useSearchParams()
     const router = useRouter();
 
     async function fetchData() {
@@ -52,7 +36,6 @@ export default function DocExplorer({ fetchDataURL }: DocExplorerProps) {
             throw new Error('Network response was not ok');
         }
         const result = await response.json();
-        console.log(result)
         return result
     }
     const { data, isLoading } = useQuery({ queryKey: ['foldersFiles'], queryFn: fetchData })

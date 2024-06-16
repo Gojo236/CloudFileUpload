@@ -6,10 +6,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import AlertDialog from './AlertDialog';
 import { useState } from 'react';
-import { rename } from 'fs';
-
-
-const ITEM_HEIGHT = 48;
 
 export default function KebabMenu({ isFile, id, name }: { isFile: boolean, id: string, name: string }) {
     const queryClient = useQueryClient()

@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button, makeStyles, styled } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AlertDialog from './AlertDialog';
@@ -45,7 +45,6 @@ export default function SideBar({ selectedIndex, setSelectedIndex, sideBarAction
       method: "POST",
       body: JSON.stringify({ name: name, parentFolder: parentFolder }),
     })
-    console.log(res)
   }
 
 
