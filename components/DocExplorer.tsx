@@ -87,7 +87,6 @@ export default function DocExplorer() {
                     </TableHead>
                     <TableBody>
                         {userFolders.map((folder: any) => (
-                            // <div onClick={() => { console.log(folder.id) }}>
                                 <TableRow
                                     key={folder.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontSize: "60px"}}
@@ -128,6 +127,5 @@ export default function DocExplorer() {
                 </Table>
             </TableContainer>
         </div>
-
     );
 }

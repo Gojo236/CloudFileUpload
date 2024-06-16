@@ -13,9 +13,7 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    console.log(req.url)
     const searchParams = new URLSearchParams(req.url.split('?')[1]);
-    console.log(searchParams)
     const docId = searchParams.get('docId');
     if (!docId) {
         return new Response(JSON.stringify({ msg: "Document ID is required" }), {

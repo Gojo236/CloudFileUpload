@@ -22,7 +22,7 @@ export default function SideBar() {
 
   const search = useSearchParams()
   const folderId = search.get("folderId")
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const queryClient = useQueryClient()
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
