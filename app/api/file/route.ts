@@ -7,6 +7,7 @@ import { storage } from "@/config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import Doc, { IDoc } from "@/model/Doc";
 import mongoose from "mongoose";
+import Folder, { IFolder } from "@/model/Folder";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
         docSize: file.size
     });
 
-
+    await updateParentFoldersSize(formData.get("parentFolder")?.toString(), file.size);
     await newDoc.save()
     return new Response(JSON.stringify(newDoc), {
         status: 201,
@@ -109,8 +110,7 @@ export async function DELETE(req: NextRequest) {
             await deleteObject(storageRef);
             await Doc.findByIdAndDelete(id);
         }
-        else
-        {
+        else {
             document.deletedAt = Date.now();
             await document.save();
         }
@@ -125,4 +125,15 @@ export async function DELETE(req: NextRequest) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
+}
+
+async function updateParentFoldersSize(folderId: String | null | undefined, fileSize: number) {
+    if (!folderId)
+        return;
+    const folder = await Folder.findById(folderId);
+    if(!folder)
+        return;
+    folder.size += fileSize;
+    folder.save();
+    updateParentFoldersSize(folder.parentFolder, fileSize);
 }
