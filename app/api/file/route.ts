@@ -13,6 +13,7 @@ import {
 import Doc, { IDoc } from "@/model/Doc";
 import mongoose from "mongoose";
 import Folder, { IFolder } from "@/model/Folder";
+import { updateParentFoldersSize } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession();
@@ -79,7 +80,7 @@ export async function GET() {
   });
 
   return NextResponse.json({
-    userDocs: docs.map((doc: IDoc) => {
+    userDocs: docs.map((doc) => {
       return {
         id: doc._id,
         name: doc.name,
@@ -140,16 +141,4 @@ export async function DELETE(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     });
   }
-}
-
-export async function updateParentFoldersSize(
-  folderId: String | null | undefined,
-  size: number,
-) {
-  if (!folderId) return;
-  const folder = await Folder.findById(folderId);
-  if (!folder) return;
-  folder.size += size;
-  folder.save();
-  updateParentFoldersSize(folder.parentFolder, size);
 }

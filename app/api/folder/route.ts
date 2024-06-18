@@ -1,10 +1,10 @@
 import connectDB from "@/lib/connectDb";
+import { updateParentFoldersSize } from "@/lib/utils";
 import Doc, { IDoc } from "@/model/Doc";
 import Folder, { IFolder } from "@/model/Folder";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { updateParentFoldersSize } from "../file/route";
 
 export async function GET(req: NextRequest) {
   await connectDB();
