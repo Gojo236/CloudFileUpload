@@ -7,26 +7,25 @@ import Doc, { IDoc } from "@/model/Doc";
 import mongoose from "mongoose";
 
 export async function GET() {
-    await connectDB();
-    const session = await getServerSession();
-    if (!session?.user?.email)
-        return;
-    await connectDB();
-    const docs = await Doc.find({
-        userEmail: session?.user?.email,
-        deletedAt: { $ne: null }
-    });
+  await connectDB();
+  const session = await getServerSession();
+  if (!session?.user?.email) return;
+  await connectDB();
+  const docs = await Doc.find({
+    userEmail: session?.user?.email,
+    deletedAt: { $ne: null },
+  });
 
-    const userDocs = docs.map((doc) => {
-        return {
-            id: doc._id,
-            name: doc.name,
-            downloadURL: doc.downloadURL,
-            docSize: doc.docSize,
-            updatedAt: doc.updatedAt,
-        }
-    });
-    return NextResponse.json({userDocs})
+  const userDocs = docs.map((doc) => {
+    return {
+      id: doc._id,
+      name: doc.name,
+      downloadURL: doc.downloadURL,
+      docSize: doc.docSize,
+      updatedAt: doc.updatedAt,
+    };
+  });
+  return NextResponse.json({ userDocs });
 }
 
 // export async function DELETE(req: NextRequest) {
