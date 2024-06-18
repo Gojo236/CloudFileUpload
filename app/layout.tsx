@@ -2,13 +2,12 @@
 import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import "./globals.css";
-import { CssBaseline, StyledEngineProvider } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import {
   QueryClient,
   QueryClientProvider,
-  useQuery,
 } from "@tanstack/react-query";
-import SideBar from "@/components/SideBar";
+import { Suspense } from "react";
 
 const queryClient = new QueryClient();
 const inter = Inter({ subsets: ["latin"] });
@@ -22,9 +21,11 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <CssBaseline />
-        <html lang="en" id="_next">
-          <body className={inter.className}>{children}</body>
-        </html>
+        <Suspense>
+          <html lang="en" id="_next">
+            <body className={inter.className}>{children}</body>
+          </html>
+        </Suspense>
       </SessionProvider>
     </QueryClientProvider>
   );
